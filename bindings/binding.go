@@ -27,6 +27,7 @@ type BindingsSpec struct {
 	Uri          string
 	Username     string
 	Password     string
+	SSL          bool
 	Certificates []string
 }
 
@@ -108,6 +109,7 @@ func NewBinding(Type ...string) (*BindingsSpec, error) {
 	bs.Port = uint16(port)
 	bs.Username = result["username"]
 	bs.Password = result["password"]
+	bs.SSL = result["ssl"] == "true"
 	bs.Certificates = []string{""}
 
 	return bs, err
