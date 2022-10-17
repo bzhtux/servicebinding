@@ -11,8 +11,10 @@ The recommanded service binding spec from [servicebinding.io](https://servicebin
 * `uri` : A valid URI as defined by [RFC3986](https://tools.ietf.org/html/rfc3986)
 * `username` : A string-based username credentials
 * `password` : A string-based password credentials
+* `database` : Extended Spec for database requirements
 * `certificates` : A collection of PEM-encoded X.509 public certificates, representing a certificate chain used to trust TLS connections
 * `private-key` : A PEM-encoded private key used in mTLS client authentication
+* `ssl` : Extended spec with SSL enabled
 
 And the `workload projection` :
 

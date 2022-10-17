@@ -27,9 +27,15 @@ type BindingsSpec struct {
 	Uri          string
 	Username     string
 	Password     string
+	Database     string
 	SSL          bool
 	Certificates []string
 }
+
+// type ExtendedSpec struct {
+// 	*BindingsSpec
+// 	Database string
+// }
 
 type Binding interface {
 	NewServiceBinding()
@@ -102,13 +108,12 @@ func NewBinding(Type ...string) (*BindingsSpec, error) {
 	}
 
 	bs := new(BindingsSpec)
-
-	// bs := new(BindingsSpec)
 	port, _ := strconv.Atoi(result["port"])
 	bs.Host = result["host"]
 	bs.Port = uint16(port)
 	bs.Username = result["username"]
 	bs.Password = result["password"]
+	bs.Database = result["database"]
 	bs.SSL = result["ssl"] == "true"
 	bs.Certificates = []string{""}
 
