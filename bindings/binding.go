@@ -12,7 +12,6 @@ import (
 )
 
 const (
-	// Type                          = "type"
 	DEFAULT_SERVICE_BINDINGS_ROOT = "/bindings"
 	serviceBindingRoot            = "SERVICE_BINDING_ROOT"
 )
@@ -31,11 +30,6 @@ type BindingsSpec struct {
 	SSL          bool
 	Certificates []string
 }
-
-// type ExtendedSpec struct {
-// 	*BindingsSpec
-// 	Database string
-// }
 
 type Binding interface {
 	NewServiceBinding()
@@ -80,28 +74,30 @@ func NewBinding(Type ...string) (*BindingsSpec, error) {
 		}
 
 		if info.Name() == "type" && info.Mode()&os.ModeSymlink != os.ModeSymlink {
-			// log.Printf("File: %s", bpath)
-			// fmt.Println(path.Dir(bpath))
 
-			files, err := os.ReadDir(path.Dir(bpath))
-			if err != nil {
-				log.Printf("Error reading dir %s", bpath)
-				return err
-			}
-			for _, f := range files {
-				fc, err := os.ReadFile(filepath.Join(path.Dir(bpath), f.Name()))
+			fct, err := os.ReadFile(bpath)
+			if err == nil && string(fct) == t {
+				files, err := os.ReadDir(path.Dir(bpath))
 				if err != nil {
-					log.Printf("Error getting file content: %s/%s", path.Dir(bpath), f.Name())
+					log.Printf("Error reading dir %s", bpath)
 					return err
 				}
-				// log.Printf("file: %s - content: %s", f.Name(), fc)
-				result[f.Name()] = string(fc)
+
+				for _, f := range files {
+					fc, err := os.ReadFile(filepath.Join(path.Dir(bpath), f.Name()))
+					if err != nil {
+						log.Printf("Error getting file content: %s/%s", path.Dir(bpath), f.Name())
+						return err
+					}
+
+					result[f.Name()] = string(fc)
+				}
 			}
 		}
 
 		return nil
 	})
-	// log.Printf("Map: %s\n", result)
+
 	if err != nil {
 		log.Printf("filepath.Walk error: %q\n", err.Error())
 		return nil, err
