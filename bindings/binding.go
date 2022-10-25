@@ -9,6 +9,8 @@ import (
 	"path"
 	"path/filepath"
 	"strconv"
+
+	. "github.com/mitchellh/mapstructure"
 )
 
 const (
@@ -21,14 +23,14 @@ type ServiceBinding struct {
 }
 
 type BindingsSpec struct {
-	Host         string
-	Port         uint16
-	Uri          string
-	Username     string
-	Password     string
-	Database     string
-	SSL          bool
-	Certificates []string
+	Host         string   `mapstructure:"host"`
+	Port         uint16   `mapstructure:"port"`
+	Uri          string   `mapstructure:"uri"`
+	Username     string   `mapstructure:"username"`
+	Password     string   `mapstructure:"password"`
+	Database     string   `mapstructure:"database"`
+	SSL          bool     `mapstructure:"ssl"`
+	Certificates []string `mapstructure:"certificates"`
 }
 
 type Binding interface {
@@ -51,9 +53,10 @@ func NewServiceBinding() (*ServiceBinding, error) {
 	return sb, nil
 }
 
+// Get only one binding type (e.g redis) even if Type is a slice
 func NewBinding(Type ...string) (*BindingsSpec, error) {
 	var t string
-	result := make(map[string]string)
+	result := make(map[string]interface{})
 	if len(Type) == 0 {
 		log.Fatal("No binding provided")
 	} else {
@@ -89,8 +92,12 @@ func NewBinding(Type ...string) (*BindingsSpec, error) {
 						log.Printf("Error getting file content: %s/%s", path.Dir(bpath), f.Name())
 						return err
 					}
-
-					result[f.Name()] = string(fc)
+					if f.Name() == "port" {
+						dataPort, _ := strconv.Atoi(string(fc))
+						result[f.Name()] = dataPort
+					} else {
+						result[f.Name()] = string(fc)
+					}
 				}
 			}
 		}
@@ -104,14 +111,10 @@ func NewBinding(Type ...string) (*BindingsSpec, error) {
 	}
 
 	bs := new(BindingsSpec)
-	port, _ := strconv.Atoi(result["port"])
-	bs.Host = result["host"]
-	bs.Port = uint16(port)
-	bs.Username = result["username"]
-	bs.Password = result["password"]
-	bs.Database = result["database"]
-	bs.SSL = result["ssl"] == "true"
-	bs.Certificates = []string{""}
-
-	return bs, err
+	if err := Decode(result, &bs); err != nil {
+		log.Printf("Error when decoding result into struct: %s\n", err.Error())
+		return nil, err
+	} else {
+		return bs, err
+	}
 }
