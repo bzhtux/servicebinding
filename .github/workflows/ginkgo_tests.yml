@@ -1,0 +1,47 @@
+# This is a basic workflow to help you get started with Actions
+
+name: ginkgo tests
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "master" branch
+  push:
+    branches: [ "*" ]
+    tags:
+      - v*
+  pull_request:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  test-servicebinding-code:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        version: [ '1.19' ]
+    steps:
+      - uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.version }}
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+      - name: install dependancies
+        run: |
+          cd bindings
+          go get -v -u ./...
+
+      - name: run ginkgo
+        run: |
+          cd bindings
+          go mod tidy && git diff --exit-code go.mod go.sum
+          go vet
+          go install github.com/onsi/ginkgo/v2/ginkgo@latest
+          go get github.com/onsi/gomega/...
+          go run ./ginkgo
