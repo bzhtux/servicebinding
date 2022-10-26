@@ -19,7 +19,7 @@ const (
 )
 
 type ServiceBinding struct {
-	root string
+	Root string
 }
 
 type BindingsSpec struct {
@@ -49,7 +49,7 @@ func NewServiceBinding() (*ServiceBinding, error) {
 	if !exists {
 		return nil, errors.New("environment variable not set: " + serviceBindingRoot)
 	}
-	sb := &ServiceBinding{root: root}
+	sb := &ServiceBinding{Root: root}
 	return sb, nil
 }
 
@@ -69,8 +69,8 @@ func NewBinding(Type ...string) (*BindingsSpec, error) {
 		return nil, err
 	}
 
-	log.Printf("Service Binding Root: %s\n", sb.root)
-	err = filepath.Walk(sb.root, func(bpath string, info fs.FileInfo, err error) error {
+	log.Printf("Service Binding Root: %s\n", sb.Root)
+	err = filepath.Walk(sb.Root, func(bpath string, info fs.FileInfo, err error) error {
 		if err != nil {
 			log.Printf("filepath.Walk error: %s\n", err.Error())
 			return err
@@ -96,8 +96,14 @@ func NewBinding(Type ...string) (*BindingsSpec, error) {
 						dataPort, _ := strconv.Atoi(string(fc))
 						result[f.Name()] = dataPort
 					} else {
-						result[f.Name()] = string(fc)
+						if f.Name() == "ssl" {
+							boolSSL, _ := strconv.ParseBool(string(fc))
+							result[f.Name()] = boolSSL
+						} else {
+							result[f.Name()] = string(fc)
+						}
 					}
+
 				}
 			}
 		}
