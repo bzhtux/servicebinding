@@ -33,7 +33,7 @@ jobs:
 
       - name: run ginkgo
         run: |
-          go install github.com/onsi/ginkgo/v2/ginkgo
+          go install github.com/onsi/ginkgo/v2/ginkgo@latest
           go get github.com/onsi/gomega/...
           cd bindings
           ginkgo
