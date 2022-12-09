@@ -41,6 +41,7 @@ jobs:
       - name: run ginkgo
         run: |
           cd bindings
+          go mod tidy
           go get -u -v ./...
           go vet ./...
           go install github.com/onsi/ginkgo/v2/ginkgo
