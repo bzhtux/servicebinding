@@ -31,19 +31,16 @@ jobs:
           go-version: ${{ matrix.version }}
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      # - uses: actions/checkout@v3
-      # - name: install dependancies
-      #   run: |
-      #     cd bindings
-      #     go get -v -u ./...
-
       - uses: actions/checkout@v3
+      - name: install dependancies
+        run: |
+          cd bindings
+          go get -v -u ./...
       - name: run ginkgo
         run: |
           cd bindings
-          go install github.com/onsi/ginkgo/v2/ginkgo
+          go mod tidy && git diff --exit-code go.mod go.sum
+          go vet
+          go install github.com/onsi/ginkgo/v2/ginkgo@latest
           go get github.com/onsi/gomega/...
-          go mod tidy
-          go get -u -v ./...
-          go vet ./...
           ginkgo
