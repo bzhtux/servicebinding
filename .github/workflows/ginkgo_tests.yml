@@ -42,6 +42,7 @@ jobs:
         run: |
           cd bindings
           rm go.mod
+          go mod init
           go mod tidy && git diff --exit-code go.mod go.sum
           go vet ./...
           go install github.com/onsi/ginkgo/v2/ginkgo
