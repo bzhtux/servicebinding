@@ -26,22 +26,22 @@ jobs:
       matrix:
         version: [ '1.19' ]
     steps:
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.version }}
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-      - name: install dependancies
-        run: |
-          cd bindings
-          go get -v -u ./...
+      # - uses: actions/checkout@v3
+      # - name: install dependancies
+      #   run: |
+      #     cd bindings
+      #     go get -v -u ./...
 
       - name: run ginkgo
         run: |
           cd bindings
           go mod tidy && git diff --exit-code go.mod go.sum
-          go vet
-          go install github.com/onsi/ginkgo/v2/ginkgo@latest
+          go vet ./...
+          go install github.com/onsi/ginkgo/v2/ginkgo
           go get github.com/onsi/gomega/...
-          go run ./ginkgo
+          ginkgo
