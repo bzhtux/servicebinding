@@ -84,7 +84,10 @@ func NewBinding(bindingtype string) (*BindingsSpec, error) {
 						return err
 					}
 					if f.Name() == "port" {
-						dataPort, _ := strconv.Atoi(string(fc))
+						dataPort, err := strconv.Atoi(string(fc))
+						if err != nil {
+							return err
+						}
 						result[f.Name()] = dataPort
 					} else {
 						if f.Name() == "ssl" {
@@ -98,7 +101,12 @@ func NewBinding(bindingtype string) (*BindingsSpec, error) {
 				}
 			}
 		}
-		return nil
+		if err != nil {
+			return err
+		} else {
+			return nil
+		}
+
 	})
 
 	if err != nil {
