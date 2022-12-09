@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"strconv"
 
-	. "github.com/mitchellh/mapstructure"
+	"github.com/mitchellh/mapstructure"
 )
 
 const (
@@ -30,66 +30,57 @@ type BindingsSpec struct {
 	Password     string   `mapstructure:"password"`
 	Database     string   `mapstructure:"database"`
 	SSL          bool     `mapstructure:"ssl"`
+	Provider     string   `mapstructure:"provider"`
 	Certificates []string `mapstructure:"certificates"`
+	PrivateKey   string   `mapstructure:"privatekey"`
+	Type         string   `mapstructure:"type"`
 }
 
-type Binding interface {
-	NewServiceBinding()
-	NewBinding()
-}
-
-type SecretSpec struct {
-	*BindingsSpec
-	Type     string
-	Provider string
-}
-
-func NewServiceBinding() (*ServiceBinding, error) {
+func GetServiceBindingRoot() (*ServiceBinding, error) {
 	root, exists := os.LookupEnv(serviceBindingRoot)
 	if !exists {
-		return nil, errors.New("environment variable not set: " + serviceBindingRoot)
+		err_msg := fmt.Sprintf("Environment variable not set: %s", serviceBindingRoot)
+		return nil, errors.New(err_msg)
 	}
-	sb := &ServiceBinding{Root: root}
+	sb := &ServiceBinding{
+		Root: root,
+	}
 	return sb, nil
 }
 
-// Get only one binding type (e.g redis) even if Type is a slice
-func NewBinding(Type ...string) (*BindingsSpec, error) {
-	var t string
+func NewBinding(bindingtype string) (*BindingsSpec, error) {
+	bs := new(BindingsSpec)
 	result := make(map[string]interface{})
-	if len(Type) == 0 {
-		log.Fatal("No binding provided")
-	} else {
-		t = Type[0]
-		fmt.Printf("Binding type: %s\n", t)
-	}
-	sb, err := NewServiceBinding()
+
+	sb, err := GetServiceBindingRoot()
 	if err != nil {
-		log.Printf("NewServiceBindings error: %s\n", err.Error())
+		log.Printf("GetServiceBindingRoot error: %s\n", err.Error())
 		return nil, err
 	}
 
-	log.Printf("Service Binding Root: %s\n", sb.Root)
+	log.Printf("Found ServiceBinding.Root %s, processing ...\n", sb.Root)
+	// Walk through SERVICE_BINDING_ROOT directory
 	err = filepath.Walk(sb.Root, func(bpath string, info fs.FileInfo, err error) error {
 		if err != nil {
-			log.Printf("filepath.Walk error: %s\n", err.Error())
+			log.Printf("Error with ServiceBinding.Root = %s : %s\n", sb.Root, err.Error())
 			return err
 		}
 
+		// If file is not a link continue walking, else stop (do nothing)
 		if info.Name() == "type" && info.Mode()&os.ModeSymlink != os.ModeSymlink {
 
 			fct, err := os.ReadFile(bpath)
-			if err == nil && string(fct) == t {
+			// If file content match the binding type (e.g postgresql)
+			// loop into the parent directory to list files and get content
+			if err == nil && string(fct) == bindingtype {
 				files, err := os.ReadDir(path.Dir(bpath))
 				if err != nil {
-					log.Printf("Error reading dir %s", bpath)
 					return err
 				}
 
 				for _, f := range files {
 					fc, err := os.ReadFile(filepath.Join(path.Dir(bpath), f.Name()))
 					if err != nil {
-						log.Printf("Error getting file content: %s/%s", path.Dir(bpath), f.Name())
 						return err
 					}
 					if f.Name() == "port" {
@@ -107,18 +98,14 @@ func NewBinding(Type ...string) (*BindingsSpec, error) {
 				}
 			}
 		}
-
 		return nil
 	})
 
 	if err != nil {
-		log.Printf("filepath.Walk error: %q\n", err.Error())
 		return nil, err
 	}
 
-	bs := new(BindingsSpec)
-	if err := Decode(result, &bs); err != nil {
-		log.Printf("Error when decoding result into struct: %s\n", err.Error())
+	if err := mapstructure.Decode(result, &bs); err != nil {
 		return nil, err
 	} else {
 		return bs, err
