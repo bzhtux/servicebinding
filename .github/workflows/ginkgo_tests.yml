@@ -37,6 +37,7 @@ jobs:
       #     cd bindings
       #     go get -v -u ./...
 
+      - uses: actions/checkout@v3
       - name: run ginkgo
         run: |
           cd bindings
