@@ -41,6 +41,6 @@ jobs:
           cd bindings
           go mod tidy && git diff --exit-code go.mod go.sum
           go vet
-          go install github.com/onsi/ginkgo/v2/ginkgo@latest
+          go install github.com/onsi/ginkgo/v2/ginkgo
           go get github.com/onsi/gomega/...
           ginkgo -v
