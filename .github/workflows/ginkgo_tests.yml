@@ -35,12 +35,13 @@ jobs:
       - name: install dependancies
         run: |
           cd bindings
-          go install github.com/onsi/ginkgo/v2/ginkgo
-          go get github.com/onsi/gomega/...
+          go mod tidy
+          go get -v -u ./...
           go get github.com/onsi/ginkgo/v2/ginkgo/generators@v2.5.1
           go get github.com/onsi/ginkgo/v2/ginkgo/internal@v2.5.1
           go get github.com/onsi/ginkgo/v2/ginkgo/labels@v2.5.1
-          go get -v -u ./...
+          go install github.com/onsi/ginkgo/v2/ginkgo
+          go get github.com/onsi/gomega/...
       - name: run ginkgo
         run: |
           cd bindings
