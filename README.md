@@ -1,6 +1,6 @@
 # Service Bindind for Golang Apps
 
-![Ginkgo Test](https://github.com/bzhtux/servicebinding/actions/workflows/ginkgo_tests.yml/badge.svg)  ![Woke](https://github.com/bzhtux/servicebinding/actions/workflows/woke.yml/badge.svg)
+![Ginkgo Test](https://github.com/bzhtux/servicebinding/actions/workflows/ginkgo_tests.yml/badge.svg) ![Woke](https://github.com/bzhtux/servicebinding/actions/workflows/woke.yaml/badge.svg)
 
 > Kubernetes Service Binding Library for Golang Apps
 
