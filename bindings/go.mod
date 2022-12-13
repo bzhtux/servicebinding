@@ -1,10 +1,11 @@
-module github.com/bzhtux/servicebinding/bindings v0.1.2
+module github.com/bzhtux/servicebinding/bindings/v0.1.2
 
 go 1.19
 
 require github.com/mitchellh/mapstructure v1.5.0
 
 require (
+	github.com/bzhtux/servicebinding/bindings v0.0.0-20221212090411-d044804a2073 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
