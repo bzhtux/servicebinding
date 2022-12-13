@@ -1,4 +1,4 @@
-module github.com/bzhtux/servicebinding/bindings/v0.1.2
+module github.com/bzhtux/servicebinding/bindings
 
 go 1.19
 
