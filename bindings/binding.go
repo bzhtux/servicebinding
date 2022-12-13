@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	"log"
 	"os"
 	"path"
 	"path/filepath"
@@ -90,7 +91,9 @@ func NewBinding(bindingtype string) (*BindingsSpec, error) {
 						result[f.Name()] = dataPort
 					} else {
 						if f.Name() == "ssl" {
+							log.Printf("*** SERVICE_BINDINGS_SSL: %s", string(fc))
 							boolSSL, _ := strconv.ParseBool(string(fc))
+							log.Printf("*** SERVICE_BINDINGS_SSL: %v", boolSSL)
 							result[f.Name()] = boolSSL
 						} else {
 							result[f.Name()] = string(fc)
