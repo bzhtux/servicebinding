@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
-	"log"
 	"os"
 	"path"
 	"path/filepath"
@@ -54,15 +53,15 @@ func NewBinding(bindingtype string) (*BindingsSpec, error) {
 
 	sb, err := GetServiceBindingRoot()
 	if err != nil {
-		log.Printf("GetServiceBindingRoot error: %s\n", err.Error())
+		// log.Printf("GetServiceBindingRoot error: %s\n", err.Error())
 		return nil, err
 	}
 
-	log.Printf("Found ServiceBinding.Root %s, processing ...\n", sb.Root)
+	// log.Printf("Found ServiceBinding.Root %s, processing ...\n", sb.Root)
 	// Walk through SERVICE_BINDING_ROOT directory
 	err = filepath.Walk(sb.Root, func(bpath string, info fs.FileInfo, err error) error {
 		if err != nil {
-			log.Printf("Error with ServiceBinding.Root = %s : %s\n", sb.Root, err.Error())
+			// log.Printf("Error with ServiceBinding.Root = %s : %s\n", sb.Root, err.Error())
 			return err
 		}
 
