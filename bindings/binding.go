@@ -91,11 +91,8 @@ func NewBinding(bindingtype string) (*BindingsSpec, error) {
 						result[f.Name()] = dataPort
 					} else {
 						if f.Name() == "ssl" {
-							// log.Printf("*** SERVICE_BINDINGS_SSL: %s", string(fc))
-							// boolSSL, _ := strconv.ParseBool(string(fc))
-							// log.Printf("*** SERVICE_BINDINGS_SSL: %v", boolSSL)
-							// result[f.Name()] = boolSSL
-							result[f.Name()] = true
+							boolSSL, _ := strconv.ParseBool(string(fc))
+							result[f.Name()] = boolSSL
 						} else {
 							result[f.Name()] = string(fc)
 						}
@@ -119,7 +116,6 @@ func NewBinding(bindingtype string) (*BindingsSpec, error) {
 	if err := mapstructure.Decode(result, &bs); err != nil {
 		return nil, err
 	} else {
-		log.Printf("BindingSpec: %v", bs)
 		return bs, err
 	}
 }
