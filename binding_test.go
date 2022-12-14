@@ -6,7 +6,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"github.com/bzhtux/servicebinding/bindings"
+	bindings "github.com/bzhtux/servicebinding"
 	"github.com/spf13/afero"
 )
 
