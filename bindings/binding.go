@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	"log"
 	"os"
 	"path"
 	"path/filepath"
@@ -118,6 +119,7 @@ func NewBinding(bindingtype string) (*BindingsSpec, error) {
 	if err := mapstructure.Decode(result, &bs); err != nil {
 		return nil, err
 	} else {
+		log.Printf("BindingSpec: %v", bs)
 		return bs, err
 	}
 }
