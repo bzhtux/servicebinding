@@ -94,7 +94,7 @@ func NewBinding(bindingtype string) (*BindingsSpec, error) {
 							// boolSSL, _ := strconv.ParseBool(string(fc))
 							// log.Printf("*** SERVICE_BINDINGS_SSL: %v", boolSSL)
 							// result[f.Name()] = boolSSL
-							result[f.Name()] = string(fc)
+							result[f.Name()] = true
 						} else {
 							result[f.Name()] = string(fc)
 						}
