@@ -69,7 +69,7 @@ func NewBinding(bindingtype string) (*BindingsSpec, error) {
 		// If file is not a link continue walking, else stop (do nothing)
 		if info.Name() == "type" && info.Mode()&os.ModeSymlink != os.ModeSymlink {
 
-			fct, err := os.ReadFile(bpath)
+			// fct, err := os.ReadFile(bpath)
 			// If file content match the binding type (e.g postgresql)
 			// loop into the parent directory to list files and get content
 			// if err == nil && string(fct) == bindingtype {
