@@ -72,7 +72,8 @@ func NewBinding(bindingtype string) (*BindingsSpec, error) {
 			fct, err := os.ReadFile(bpath)
 			// If file content match the binding type (e.g postgresql)
 			// loop into the parent directory to list files and get content
-			if err == nil && string(fct) == bindingtype {
+			// if err == nil && string(fct) == bindingtype {
+			if err == nil {
 				files, err := os.ReadDir(path.Dir(bpath))
 				if err != nil {
 					return err
