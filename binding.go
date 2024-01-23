@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
-	_ "log"
+	"log"
 	"os"
 	"path"
 	"path/filepath"
